@@ -1,0 +1,12 @@
+{
+  "name": "word-frequency-analyzer",
+  "version": "0.1",
+  "description": "",
+  "main": "start.js",
+  "type": "module",
+  "dependencies": {
+    "axios": "^1.7.2",
+    "date-fns": "^3.6.0",
+    "x509.js": "^1.0.0"
+  }
+}
