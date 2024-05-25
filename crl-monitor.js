@@ -3,7 +3,7 @@ import axios from 'axios'
 import { exec } from 'child_process'
 import { parse, differenceInMinutes } from 'date-fns'
 import { twilio } from './twilio.js'
-import { isHeartbeatDue, logger, validEncodedCrl } from './utils.js'
+import { isHeartbeatDue, logger, isValidEncodedCrl } from './utils.js'
 import config from './config.js'
 
 const pExec = util.promisify(exec)
@@ -40,7 +40,7 @@ try {
         what we received. Not recieving such an encoded CRL indicates a problem which is
         notified upon.
     */
-    if (!validEncodedCrl(response.data)) {
+    if (!isValidEncodedCrl(response.data)) {
         throw new Error("Received response is not an encoded CRL")
     } 
 

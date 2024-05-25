@@ -1,6 +1,6 @@
 
 
-export const validEncodedCrl = (encodedCrl) => {
+export const isValidEncodedCrl = (encodedCrl) => {
 
     /*
         Whe are expecting a base encoded string containing + / and = characters,
