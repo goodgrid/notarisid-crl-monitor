@@ -57,3 +57,22 @@ The following property is not an application setting, but must be set as well as
 | Property | Values and use |
 | ----------- | ----------- |
 | runningCron | Cron indicating with wich interval the check is performed. |
+
+## Testing
+
+Below are the specifications of test cases considered relevant:
+
+| Name | Description | Expected result | 
+| ----------- | ----------- | ----------- |
+| EXCEEDED | The CRL was updated longer ago than acceptable | An SMS message is sent to all recipients stating the encountered error |
+| HTTP404 | CRL URL host available but content not found  | An SMS message is sent to all recipients stating that an HTTP Error 404 was encountered while downloading the CRL. |
+| HTTP50X | CRL URL host available but returns server error | An SMS message is sent to all recipients stating that an HTTP Error 50x was encountered while downloading the CRL.| 
+| DNSERROR | CRL URL host name not resolvable in DNS | An SMS message is sent to all recipients stating the encountered error |
+| NETWORK |  CRL URL host unreachable over network | An SMS message is sent to all recipients stating the encountered error, possibly after a timeout of 60 seconds depending on the problem cause |
+| INVALIDCRL-1 | Retrieved encoded X509 CRL is not a valid X509 CRL from the lookks of it | An SMS message is sent to all recipients stating the encountered error |
+| INVALIDCRL-2 | Retrieved encoded X509 CRL is not a valid X509 CRL according to OpenSSL | An SMS message is sent to all recipients stating the encountered error |
+| PARSING-1 | Decoded X509 CRL does not contain the expected attributes  | An SMS message is sent to all recipients stating the encountered error |
+| PARSING-2 | Date from the decoded X509 CRL cannot be parsed as expected   | An SMS message is sent to all recipients stating the encountered error |
+| NOTIF-1 | Authentication to Twilio failed  | No heartbeat message within the configured time range |
+| NOTIF-2 | Twilio funds depleted  |  No heartbeat message within the configured time range |
+| NOTIF-3 | Twilio service unavailable  | Error in the logging and no heartbeat message within the configured time range |

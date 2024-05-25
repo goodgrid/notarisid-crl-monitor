@@ -1,7 +1,7 @@
 import util from 'util'
 import axios from 'axios'
 import { exec } from 'child_process'
-import { parse, differenceInMinutes } from 'date-fns'
+import { parse, differenceInMinutes, isValid } from 'date-fns'
 import { twilio } from './twilio.js'
 import { isHeartbeatDue, logger, isValidEncodedCrl } from './utils.js'
 import config from './config.js'
@@ -84,6 +84,11 @@ try {
             to enable us to check functioning via logging/stdout
         */
         const lastUpdatedTime = parse(`${crlLastUpdated}+0000`, "MMM d H:m:s y 'GMT'xx", new Date())
+
+        if (!isValid(lastUpdatedTime)) {
+            throw new Error("Last Update date extracted from the CRL is an invalid date.")
+        }
+
         const crlLifetimeMinutes = differenceInMinutes(new Date(), lastUpdatedTime)
     
         logger(`CRL for ${crlIssuer} was last generated ${crlLifetimeMinutes} minutes ago.`)

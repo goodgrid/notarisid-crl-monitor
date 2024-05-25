@@ -24,7 +24,7 @@ export const twilio = {
             
         } catch(error) {
             console.error(`ERROR while sending '${message}' message to ${config.recipientsPhoneNumbers}`)
-            console.error(error)
+            console.error(error.response ? error.response.data : (error.cause ? error.cause : error))
         }
     }
 }
