@@ -26,8 +26,8 @@ export const truncateMessage = (message) => {
     const maxLength = 320
     const truncationIndication = " (..truncated..)"
     if (message.length > maxLength) {
-        console.log(`Notification message was truncated. Truncated message logged next.`)
-        console.log(message)
+        logger(`Notification message was truncated. Truncated message logged next.`)
+        logger(message)
         return `${message.substring(0, maxLength - truncationIndication.length)}${truncationIndication}`
     }
    return message
@@ -61,5 +61,8 @@ export const isHeartbeatDue = (configuredRange) => {
         console.error(`An error occured while calculating with the configured heartbeat time range ${configuredRange}. No separeate message is sent about this fact, but instead the heartbeat is considered due. This means that the heartbeat will be repeatedly sent. The expected notation of the heartbeatTimeRange is 'HH:MM-HH-MM'`)
         return true
     }
+}
 
+export const logger = (message) => {
+    console.log(`${new Date().toLocaleString("nl-NL")} - ${message}`)
 }

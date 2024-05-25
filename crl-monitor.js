@@ -3,7 +3,7 @@ import axios from 'axios'
 import { exec } from 'child_process'
 import { parse, differenceInMinutes } from 'date-fns'
 import { twilio } from './twilio.js'
-import { isHeartbeatDue, validEncodedCrl } from './utils.js'
+import { isHeartbeatDue, logger, validEncodedCrl } from './utils.js'
 import config from './config.js'
 
 const pExec = util.promisify(exec)
@@ -66,7 +66,7 @@ try {
         const crlIssuerMatch = stdout.match(reIssuer)
     
         if (crlLastUpdatedMatch === null || crlIssuerMatch === null) {
-            if (config.debug) console.log(stdout)
+            if (config.debug) logger(stdout)
             throw new Error("Decoded CRL does not contain expected fields 'Last Update' and/or 'Issuer'")            
         }   
 
@@ -86,7 +86,7 @@ try {
         const lastUpdatedTime = parse(`${crlLastUpdated}+0000`, "MMM d H:m:s y 'GMT'xx", new Date())
         const crlLifetimeMinutes = differenceInMinutes(new Date(), lastUpdatedTime)
     
-        console.log(`CRL for ${crlIssuer} was last generated ${crlLifetimeMinutes} minutes ago.`)
+        logger(`CRL for ${crlIssuer} was last generated ${crlLifetimeMinutes} minutes ago.`)
     
         if (crlLifetimeMinutes > config.crlAcceptableLifetimeMinutes) {
             status.ok = false
