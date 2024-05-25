@@ -1,5 +1,6 @@
 import axios from "axios"
 import config from './config.js'
+import { truncateMessage } from "./utils.js"
 
 const twilioApi = axios.create({
     baseURL: config.twilioUrl,
@@ -13,16 +14,17 @@ export const twilio = {
         try {
             for (const recipientPhoneNumber of config.recipientsPhoneNumbers.split(",")) {
                 if (config.debug) console.log(`Sending message to ${recipientPhoneNumber}`)
-                const response = await twilioApi.post("Messages.json",new URLSearchParams({
+                await twilioApi.post("Messages.json",new URLSearchParams({
                     To:  recipientPhoneNumber,
                     From: config.twilioPhoneNumber,
-                    Body: message
+                    Body: truncateMessage(message)
                 }))
-                //TODO: Check for response and implement error handling
+                
             }
             
         } catch(error) {
-            return error
+            console.error(`ERROR while sending '${message}' message to ${config.recipientsPhoneNumbers}`)
+            console.error(error)
         }
     }
 }
