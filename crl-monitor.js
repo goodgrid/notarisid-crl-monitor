@@ -54,15 +54,25 @@ try {
         /*
             OpenSSL response is parsed using regular expressions. If the regular expression does not
             match, that fact is considered a problem which is notified upon.
+
+            The issuer is formatted as a distinguished name. We are filtering out the CN part, but 
+            OpenSSL on development environments (Mac) formats the DN differently than on production
+            (Alpine Linux), this difference is reflected in the regex allowing for either one or no 
+            spaces in "CN = [Issuer]"
         */
         const reLastUpdated = /^\s+Last Update: (.*)$/m
-        const reIssuer = /^\s+Issuer:.*CN=(.*)$/m
-        const crlLastUpdated = stdout.match(reLastUpdated)[1]
-        const crlIssuer = stdout.match(reIssuer)[1]
+        const reIssuer = /^\s+Issuer:.*CN\s?=\s?(.*)$/m
+        const crlLastUpdatedMatch = stdout.match(reLastUpdated)
+        const crlIssuerMatch = stdout.match(reIssuer)
     
-        if (crlLastUpdated === null || crlIssuer === null) {
-            throw new Error("Decoded CRL does not contain expected fields 'Last Update' and/or 'Issuer'")
-        }        
+        if (crlLastUpdatedMatch === null || crlIssuerMatch === null) {
+            if (config.debug) console.log(stdout)
+            throw new Error("Decoded CRL does not contain expected fields 'Last Update' and/or 'Issuer'")            
+        }   
+
+        const crlLastUpdated = crlLastUpdatedMatch[1]
+        const crlIssuer = crlIssuerMatch[1]
+
 
         /*
             The Last Updated property of the CRL is returned by OpenSSL in a ctime notation. We 
@@ -80,7 +90,7 @@ try {
     
         if (crlLifetimeMinutes > config.crlAcceptableLifetimeMinutes) {
             status.ok = false
-            status.messages.push(`CRL for ${crlIssuer} was last generated ${crlLifetimeMinutes} minutes ago. This exceeds the acceptable lifetime of ${config.crlAcceptableLifetimeMinutes}`)
+            status.messages.push(`CRL for ${crlIssuer} was last generated ${crlLifetimeMinutes} minutes ago. This exceeds the acceptable lifetime of ${config.crlAcceptableLifetimeMinutes} minutes.`)
         }
     } catch(error) {
         /*

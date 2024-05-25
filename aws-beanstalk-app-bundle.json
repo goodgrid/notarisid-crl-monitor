@@ -1,7 +1,7 @@
 {
 	"AWSEBDockerrunVersion": "1",
 	"Image": {
-		"Name": "goodgrid/notarisid-crl-monitor:1.1.0",
+		"Name": "goodgrid/notarisid-crl-monitor:1.1.2",
 		"Update": "true"
 	},
 	"Ports": [
