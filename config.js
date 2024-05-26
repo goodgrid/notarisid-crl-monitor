@@ -1,6 +1,5 @@
 
 const config = {
-    debug: process.env.debug,
     twilioUrl: process.env.twilioUrl,
     twilioUsername: process.env.twilioUsername,
     twilioPassword: process.env.twilioPassword,
@@ -9,7 +8,9 @@ const config = {
     crlUrl: process.env.crlUrl,
     opensslPath: process.env.opensslPath,
     crlAcceptableLifetimeMinutes: process.env.crlAcceptableLifetimeMinutes,
-    heartbeatTimeRange: process.env.heartbeatTimeRange 
+    heartbeatTimeRange: process.env.heartbeatTimeRange,
+    timeZone: process.env.TZ ? process.env.TZ : "Europe/Amsterdam",
+    debug: (process.env.debug && (process.env.debug === true || process.env.debug.toLowerCase() === "true")) ? true : false,
 }
 
 export default config

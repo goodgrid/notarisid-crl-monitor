@@ -14,7 +14,7 @@ const pExec = util.promisify(exec)
     be sent. This results in repeatedly received heartbeats indicating a configuration issue.
 */
 if (isHeartbeatDue(config.heartbeatTimeRange)) {    
-    twilio.send(`Good morning, a new day of monitoring! This heartbeat is meant to inform you that NotarisID CRL Monitor is functional. This heartbeat is sent every time the monitor runs between the daily time range of ${config.heartbeatTimeRange}.`)
+    twilio.send(`✅ CRL Monitor is functional\nHeartbeat sent daily between ${config.heartbeatTimeRange}.`)
 }
 
 /*
@@ -72,7 +72,7 @@ try {
 
         const crlLastUpdated = crlLastUpdatedMatch[1]
         const crlIssuer = crlIssuerMatch[1]
-
+        
 
         /*
             The Last Updated property of the CRL is returned by OpenSSL in a ctime notation. We 

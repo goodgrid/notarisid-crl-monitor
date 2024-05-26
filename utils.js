@@ -1,4 +1,4 @@
-
+import config from "./config.js"
 
 export const isValidEncodedCrl = (encodedCrl) => {
 
@@ -43,7 +43,9 @@ export const isHeartbeatDue = (configuredRange) => {
         possibly repeatedly indicating a configuration problem.
     */
     try {
-        const currentTime = new Date().toLocaleTimeString("nl-NL")
+        const currentTime = new Date().toLocaleTimeString("nl-NL", {
+            timeZone: config.timeZone
+          })
         const currentTimeAsInteger = Number(`${currentTime.split(":")[0]}${currentTime.split(":")[1]}`)
         const rangeStartAsInteger =  Number(`${configuredRange.split("-")[0].split(":")[0]}${configuredRange.split("-")[0].split(":")[1]}`)
         const rangeEndAsInteger =  Number(`${configuredRange.split("-")[1].split(":")[0]}${configuredRange.split("-")[1].split(":")[1]}`)
@@ -64,5 +66,7 @@ export const isHeartbeatDue = (configuredRange) => {
 }
 
 export const logger = (message) => {
-    console.log(`${new Date().toLocaleString("nl-NL")} - ${message}`)
+    console.log(`${new Date().toLocaleString("nl-NL", {
+        timeZone: config.timeZone
+      })} - ${message}`)
 }
