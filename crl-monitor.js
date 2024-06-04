@@ -2,7 +2,8 @@ import util from 'util'
 import axios from 'axios'
 import { exec } from 'child_process'
 import { parse, differenceInMinutes, isValid } from 'date-fns'
-import { twilio } from './twilio.js'
+//import { twilio } from './twilio.js'
+import { brevo } from './brevo.js'
 import { isHeartbeatDue, logger, isValidEncodedCrl } from './utils.js'
 import config from './config.js'
 
@@ -14,7 +15,7 @@ const pExec = util.promisify(exec)
     be sent. This results in repeatedly received heartbeats indicating a configuration issue.
 */
 if (isHeartbeatDue(config.heartbeatTimeRange)) {    
-    twilio.send(`✅ CRL Monitor is functional\nHeartbeat sent daily between ${config.heartbeatTimeRange}.`)
+    brevo.send(`✅ CRL Monitor is functional\nHeartbeat sent daily between ${config.heartbeatTimeRange}.`)
 }
 
 /*
@@ -82,8 +83,12 @@ try {
 
             The result of comparison between actual lifetime and acceptable lifetime is always logged 
             to enable us to check functioning via logging/stdout
+
+            The date on the CRL reserves two positions for the day of month. If this is smaller than
+            two positions, a space is added. This space is removed before parsing.
         */
-        const lastUpdatedTime = parse(`${crlLastUpdated}+0000`, "MMM d H:m:s y 'GMT'xx", new Date())
+        const crlLastUpdatedTrimmed = crlLastUpdated.replace(/\s\s+/g,' ')
+        const lastUpdatedTime = parse(`${crlLastUpdatedTrimmed}+0000`, "MMM d H:m:s y 'GMT'xx", new Date())
 
         if (!isValid(lastUpdatedTime)) {
             throw new Error("Last Update date extracted from the CRL is an invalid date.")
@@ -133,5 +138,5 @@ try {
     object. When status is not OK, a notification is being sent.
 */
 if (!status.ok) {
-    twilio.send(status.messages.join(", "))
+    brevo.send(status.messages.join(", "))
 }
